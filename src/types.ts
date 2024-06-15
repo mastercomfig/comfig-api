@@ -4,5 +4,4 @@ export const HudStat = {
 
 export const HudCount = {
   id: String,
-  key: String,
 };

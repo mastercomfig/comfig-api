@@ -78,14 +78,14 @@ export class HudDownloadGet extends OpenAPIRoute {
     context: any,
     data: Record<string, any>
   ) {
-    // Retrieve the validated request body
-    const stat = data.body;
-
-    if (stat.key !== env.API_TOKEN) {
+    if (request.headers.get("Authorization") !== `Bearer ${env.API_TOKEN}`) {
       return {
         count: -2,
       };
     }
+
+    // Retrieve the validated request body
+    const stat = data.body;
 
     const id = env.HUD_COUNT.idFromName(stat.id);
 
