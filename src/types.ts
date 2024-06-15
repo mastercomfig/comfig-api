@@ -1,5 +1,8 @@
 export const HudStat = {
   id: String,
-  challenge: String,
+};
+
+export const HudCount = {
+  id: String,
   key: String,
 };
