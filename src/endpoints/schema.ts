@@ -25,7 +25,6 @@ export class SchemaGet extends OpenAPIRoute {
     data: Record<string, any>
   ) {
     const schema = await env.QUICKPLAY.get("schema");
-    console.log(schema);
     return new Response(schema);
   }
 }
@@ -60,13 +59,10 @@ export class SchemaUpdate extends OpenAPIRoute {
     // Retrieve the validated request body
     const schema = data.body.schema;
 
-    console.log(data.body);
-
     await env.QUICKPLAY.put("schema", JSON.stringify(schema));
 
     return {
       success: true,
-      body: JSON.stringify(schema),
     };
   }
 }
