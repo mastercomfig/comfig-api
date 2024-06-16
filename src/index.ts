@@ -6,16 +6,20 @@ import {
   ServerListQuery,
   ServerListUpdate,
 } from "endpoints/quickplay";
+import { createCors } from "itty-router";
 
 export interface Env {
   HUD_COUNT: DurableObjectNamespace<Counter>;
   QUICKPLAY: KVNamespace;
 }
 
+const { preflight, corsify } = createCors();
+
 export const router = OpenAPIRouter({
   docs_url: "/",
 });
 
+router.all("*", preflight);
 router.post("/api/huds/download/add", HudDownloadStat);
 router.post("/api/huds/download/get", HudDownloadGet);
 router.post("/api/quickplay/hello", ServerListHello);
@@ -64,5 +68,7 @@ export class HudDownloadCounter extends DurableObject {
 }
 
 export default {
-  fetch: router.handle,
+  fetch: async (request, env, ctx) => {
+    return router.handle(request, env, ctx).then(corsify);
+  },
 };
