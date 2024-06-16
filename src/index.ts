@@ -6,6 +6,7 @@ import {
   ServerListQuery,
   ServerListUpdate,
 } from "endpoints/quickplay";
+import { SchemaGet, SchemaUpdate } from "endpoints/schema";
 import { createCors } from "itty-router";
 
 export interface Env {
@@ -25,6 +26,8 @@ router.post("/api/huds/download/get", HudDownloadGet);
 router.post("/api/quickplay/hello", ServerListHello);
 router.post("/api/quickplay/list", ServerListQuery);
 router.post("/api/quickplay/update", ServerListUpdate);
+router.post("/api/schema/get", SchemaGet);
+router.post("/api/schema/update", SchemaUpdate);
 
 // 404 for everything else
 router.all("*", () =>

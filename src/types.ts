@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export const HudStat = {
   id: String,
 };
@@ -26,4 +28,8 @@ export const ServerPrivate = {
 
 export const ServerListData = {
   servers: [ServerPrivate],
+};
+
+export const SchemaData = {
+  schema: z.any(),
 };
