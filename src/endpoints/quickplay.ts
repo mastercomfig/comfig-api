@@ -17,10 +17,33 @@ function estDistToPing(km: number) {
 const CONSTANT_OVERHEAD = 2;
 
 // approximation for how much distance light can travel through fiber in 1ms (and back).
-const KM_PER_MS_FIBER = 125;
+const KM_PER_MS_FIBER = [200, 150, 125, 100, 28];
+const KM_THRESHOLDS = [100, 1000, 3000, 5000, -1];
+
+function takeNum(num: number, consume: number) {
+  if (num <= consume) {
+    return [0, num];
+  }
+  return [num - consume, consume];
+}
 
 function idealDistToPing(km: number) {
-  return km / KM_PER_MS_FIBER;
+  let ping = 0;
+  for (let i = 0; i < KM_THRESHOLDS.length; i++) {
+    const consume = KM_THRESHOLDS[i];
+    const cost = KM_PER_MS_FIBER[i];
+    if (consume === -1) {
+      ping += km / cost;
+      break;
+    }
+    const [newKm, consumed] = takeNum(km, consume);
+    ping += consumed / cost;
+    if (newKm == 0) {
+      break;
+    }
+    km = newKm;
+  }
+  return ping;
 }
 
 export class ServerListHello extends OpenAPIRoute {
@@ -97,7 +120,7 @@ export class ServerListQuery extends OpenAPIRoute {
     const [myLat, myLon] = iata.airports.get(myColo);
     const distC2G = geod.Inverse(lat, lon, myLat, myLon).s12 / 1000;
     const expectedC2G = idealDistToPing(distC2G);
-    const overheadC2G = Math.max(actualC2G - expectedC2G, 1); // maybe let this go negative?
+    const overheadC2G = Math.max(actualC2G - expectedC2G, 0); // maybe let this go negative?
 
     const servers = await env.QUICKPLAY.get("servers", { type: "json" });
     if (!servers) {
@@ -108,7 +131,7 @@ export class ServerListQuery extends OpenAPIRoute {
       const [serverLon, serverLat] = server.point;
       delete server.point;
       // server to querier - estimates overhead of last mile for ~server
-      const overheadS2Q = server.ping; // this is just the raw overhead (minus 2)
+      const overheadS2Q = server.ping / 2; // this is just the raw overhead (minus 2)
       const distC2S = geod.Inverse(lat, lon, serverLat, serverLon).s12 / 1000;
       // we're expecting this to be the ideal case, and we add estimated overhead
       const expectedC2S = idealDistToPing(distC2S);
