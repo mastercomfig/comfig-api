@@ -7,7 +7,9 @@
     "dev": "wrangler dev"
   },
   "dependencies": {
+    "@adaptivelink/iata": "^0.1.4",
     "@cloudflare/itty-router-openapi": "^1.1.1",
+    "geographiclib-geodesic": "^2.0.0",
     "ip-anonymize": "^0.1.0"
   },
   "devDependencies": {

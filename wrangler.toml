@@ -9,3 +9,7 @@ class_name = "HudDownloadCounter"
 [[migrations]]
 tag = "v1"
 new_classes = ["HudDownloadCounter"]
+
+[[kv_namespaces]]
+binding = "QUICKPLAY"
+id = "2fa7e82570f845b78e0357500b055ad4"

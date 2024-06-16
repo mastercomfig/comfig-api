@@ -1,9 +1,15 @@
 import { OpenAPIRouter } from "@cloudflare/itty-router-openapi";
 import { DurableObject } from "cloudflare:workers";
-import { HudDownloadGet, HudDownloadStat } from "./endpoints/hudDownloadStat";
+import { HudDownloadGet, HudDownloadStat } from "endpoints/hudDownloadStat";
+import {
+  ServerListHello,
+  ServerListQuery,
+  ServerListUpdate,
+} from "endpoints/quickplay";
 
 export interface Env {
   HUD_COUNT: DurableObjectNamespace<Counter>;
+  QUICKPLAY: KVNamespace;
 }
 
 export const router = OpenAPIRouter({
@@ -12,6 +18,9 @@ export const router = OpenAPIRouter({
 
 router.post("/api/huds/download/add", HudDownloadStat);
 router.post("/api/huds/download/get", HudDownloadGet);
+router.post("/api/quickplay/hello", ServerListHello);
+router.post("/api/quickplay/list", ServerListQuery);
+router.post("/api/quickplay/update", ServerListUpdate);
 
 // 404 for everything else
 router.all("*", () =>
