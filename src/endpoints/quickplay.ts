@@ -18,7 +18,7 @@ const CONSTANT_OVERHEAD = 2;
 
 // approximation for how much distance light can travel through fiber in 1ms (and back).
 const KM_PER_MS_FIBER = [200, 150, 125, 100, 28];
-const KM_THRESHOLDS = [100, 1000, 3000, 5000, -1];
+const KM_THRESHOLDS = [250, 1250, 1500, 2000, -1];
 
 function takeNum(num: number, consume: number) {
   if (num <= consume) {
