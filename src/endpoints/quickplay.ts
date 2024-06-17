@@ -17,7 +17,7 @@ function estDistToPing(km: number) {
 const CONSTANT_OVERHEAD = 2;
 
 // approximation for how much distance light can travel through fiber in 1ms (and back).
-const KM_PER_MS_FIBER = [200, 150, 125, 100, 28];
+const KM_PER_MS_FIBER = [125, 100, 90, 50, 28];
 const KM_THRESHOLDS = [250, 1250, 1500, 2000, -1];
 
 function takeNum(num: number, consume: number) {
