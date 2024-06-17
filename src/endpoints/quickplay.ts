@@ -130,11 +130,11 @@ export class ServerListQuery extends OpenAPIRoute {
     for (const server of servers) {
       const [serverLon, serverLat] = server.point;
       delete server.point;
-      // server to querier - estimates overhead of last mile for ~server
-      const overheadS2Q = server.ping / 2; // this is just the raw overhead (minus 2)
       const distC2S = geod.Inverse(lat, lon, serverLat, serverLon).s12 / 1000;
       // we're expecting this to be the ideal case, and we add estimated overhead
       const expectedC2S = idealDistToPing(distC2S);
+      // server to querier - estimates overhead of last mile for ~server
+      const overheadS2Q = Math.min(expectedC2S, server.ping / 2); // this is just the raw overhead (minus 2)
       const overallOverhead = Math.max(overheadC2G + overheadS2Q, 5);
       const overallPing = expectedC2S + overallOverhead + CONSTANT_OVERHEAD;
       server.ping = overallPing;
