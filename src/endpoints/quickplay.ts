@@ -20,6 +20,9 @@ const CONSTANT_OVERHEAD = 2;
 const KM_PER_MS_FIBER = [125, 72, 65.5];
 const KM_THRESHOLDS = [250, 1250, -1];
 
+let cachedResponse = null;
+let cachedResponseExpiration = 0;
+
 function takeNum(num: number, consume: number) {
   if (num <= consume) {
     return [0, num];
@@ -90,6 +93,7 @@ export class ServerListQuery extends OpenAPIRoute {
         description: "Returns servers",
         schema: {
           servers: [Server],
+          until: Number,
         },
       },
     },
@@ -106,12 +110,13 @@ export class ServerListQuery extends OpenAPIRoute {
     if (!cfLat || !cfLon) {
       return {};
     }
+    const body = data.body;
     // theory: last mile network contributes to latency much more than full routing
     // for the small latencies we care about for good ping to a server.
     // and for huge routing errors (for example in Brazil), those are accounted for
     // most likely in our error approximation.
     // client to GC - estimates overhead of last mile for ~client
-    const actualC2G = data.body.ping; // we get the timing from the client (minus 2)
+    const actualC2G = body.ping; // we get the timing from the client (minus 2)
     const lon = parseFloat(cfLon);
     const lat = parseFloat(cfLat);
     const country = request.cf.country;
@@ -122,7 +127,22 @@ export class ServerListQuery extends OpenAPIRoute {
     const expectedC2G = idealDistToPing(distC2G);
     const overheadC2G = Math.max(actualC2G - expectedC2G, 0); // maybe let this go negative?
 
-    const servers = await env.QUICKPLAY.get("servers", { type: "json" });
+    const now = new Date().getTime();
+    if (cachedResponseExpiration <= now) {
+      const { kvResp, metadata } = await env.QUICKPLAY.getWithMetadata(
+        "servers",
+        {
+          type: "json",
+        }
+      );
+      cachedResponse = kvResp;
+      // When we get from KV, that's an enforced 60 second cache.
+      // So, enforce that here.
+      // We also check to see if the querier expects the data to be stale by 60 seconds from now.
+      cachedResponseExpiration = Math.max(metadata.until, now + 60);
+    }
+    const servers = cachedResponse;
+    const until = cachedResponseExpiration;
     if (!servers) {
       return [];
     }
@@ -140,6 +160,9 @@ export class ServerListQuery extends OpenAPIRoute {
       server.ping = overallPing;
     }
 
+    if (body.version === 2) {
+      return { servers, until };
+    }
     return servers;
   }
 }
@@ -172,9 +195,20 @@ export class ServerListUpdate extends OpenAPIRoute {
     }
 
     // Retrieve the validated request body
-    const servers = data.body.servers;
+    const body = data.body;
+    const servers = body.servers;
+    const until = body.until;
 
-    await env.QUICKPLAY.put("servers", JSON.stringify(servers));
+    await env.QUICKPLAY.put("servers", JSON.stringify(servers), {
+      metadata: { until },
+    });
+
+    // One server gets to cache early because its putting.
+    cachedResponse = servers;
+    // Refresh the expiration if our KV cache won't be stale at that time.
+    if (until > cachedResponseExpiration) {
+      cachedResponseExpiration = until;
+    }
 
     return {
       success: true,

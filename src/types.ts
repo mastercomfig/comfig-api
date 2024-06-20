@@ -10,6 +10,7 @@ export const HudCount = {
 
 export const ServerListRequest = {
   ping: Number,
+  version: Number,
 };
 
 export const ServerPrivate = {
@@ -28,6 +29,7 @@ export const ServerPrivate = {
 
 export const ServerListData = {
   servers: [ServerPrivate],
+  until: Number,
 };
 
 export const SchemaData = {
