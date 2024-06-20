@@ -126,19 +126,13 @@ export class ServerListQuery extends OpenAPIRoute {
 
     const now = new Date().getTime();
     if (cachedResponseExpiration <= now) {
-      const { kvResp, metadata } = await env.QUICKPLAY.getWithMetadata(
+      const { value, metadata } = await env.QUICKPLAY.getWithMetadata(
         "servers",
         {
           type: "json",
         }
       );
-      if (!kvResp) {
-        cachedResponse = await env.QUICKPLAY.get("servers", {
-          type: "json",
-        });
-      } else {
-        cachedResponse = kvResp;
-      }
+      cachedResponse = value;
       // When we get from KV, that's an enforced 60 second cache.
       // So, enforce that here.
       // We also check to see if the querier expects the data to be stale by 60 seconds from now.
