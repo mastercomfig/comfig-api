@@ -78,6 +78,8 @@ const Server = {
   ping: Number,
 };
 
+const ONE_MINUTE = 60 * 1000;
+
 export class ServerListQuery extends OpenAPIRoute {
   static schema: OpenAPIRouteSchema = {
     tags: ["Quickplay"],
@@ -140,7 +142,10 @@ export class ServerListQuery extends OpenAPIRoute {
       // When we get from KV, that's an enforced 60 second cache.
       // So, enforce that here.
       // We also check to see if the querier expects the data to be stale by 60 seconds from now.
-      cachedResponseExpiration = Math.max(metadata?.until ?? 0, now + 60);
+      cachedResponseExpiration = Math.max(
+        metadata?.until ?? 0,
+        now + ONE_MINUTE
+      );
     }
     const servers = cachedResponse;
     const until = cachedResponseExpiration;
