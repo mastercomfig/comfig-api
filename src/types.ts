@@ -10,7 +10,7 @@ export const HudCount = {
 
 export const ServerListRequest = {
   ping: Number,
-  version: Number,
+  version: z.number().optional(),
 };
 
 export const ServerPrivate = {

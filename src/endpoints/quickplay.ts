@@ -139,7 +139,7 @@ export class ServerListQuery extends OpenAPIRoute {
       // When we get from KV, that's an enforced 60 second cache.
       // So, enforce that here.
       // We also check to see if the querier expects the data to be stale by 60 seconds from now.
-      cachedResponseExpiration = Math.max(metadata.until, now + 60);
+      cachedResponseExpiration = Math.max(metadata?.until ?? 0, now + 60);
     }
     const servers = cachedResponse;
     const until = cachedResponseExpiration;
