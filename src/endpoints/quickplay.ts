@@ -147,7 +147,7 @@ export class ServerListQuery extends OpenAPIRoute {
         now + ONE_MINUTE
       );
     }
-    const servers = cachedResponse;
+    const servers = structuredClone(cachedResponse);
     const until = cachedResponseExpiration;
     if (!servers) {
       return [];
