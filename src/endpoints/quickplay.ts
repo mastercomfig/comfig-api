@@ -8,11 +8,6 @@ import { ServerListData, ServerListRequest } from "../types";
 
 const geod = geodesic.Geodesic.WGS84;
 
-// overall approximation
-function estDistToPing(km: number) {
-  return (km / 1000) * 28;
-}
-
 // approximation for fixed cost of network communication
 const CONSTANT_OVERHEAD = 2;
 
@@ -135,7 +130,13 @@ export class ServerListQuery extends OpenAPIRoute {
           type: "json",
         }
       );
-      cachedResponse = kvResp;
+      if (!kvResp) {
+        cachedResponse = await env.QUICKPLAY.get("servers", {
+          type: "json",
+        });
+      } else {
+        cachedResponse = kvResp;
+      }
       // When we get from KV, that's an enforced 60 second cache.
       // So, enforce that here.
       // We also check to see if the querier expects the data to be stale by 60 seconds from now.
