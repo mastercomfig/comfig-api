@@ -127,10 +127,7 @@ export class ServerListQuery extends OpenAPIRoute {
     const now = new Date().getTime();
     if (cachedResponseExpiration <= now) {
       const { value, metadata } = await env.QUICKPLAY.getWithMetadata(
-        "servers",
-        {
-          type: "json",
-        }
+        "servers"
       );
       cachedResponse = value;
       // When we get from KV, that's an enforced 60 second cache.
@@ -141,7 +138,8 @@ export class ServerListQuery extends OpenAPIRoute {
         now + ONE_MINUTE
       );
     }
-    const servers = structuredClone(cachedResponse);
+
+    const servers = JSON.parse(cachedResponse);
     const until = cachedResponseExpiration;
     if (!servers) {
       return [];
@@ -199,12 +197,14 @@ export class ServerListUpdate extends OpenAPIRoute {
     const servers = body.servers;
     const until = body.until;
 
-    await env.QUICKPLAY.put("servers", JSON.stringify(servers), {
+    const value = JSON.stringify(servers);
+
+    await env.QUICKPLAY.put("servers", value, {
       metadata: { until },
     });
 
     // One server gets to cache early because its putting.
-    cachedResponse = servers;
+    cachedResponse = value;
     // Refresh the expiration if our KV cache won't be stale at that time.
     if (until > cachedResponseExpiration) {
       cachedResponseExpiration = until;
