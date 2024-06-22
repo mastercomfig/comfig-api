@@ -133,7 +133,7 @@ export class ServerListQuery extends OpenAPIRoute {
       if (values && values.value) {
         cachedResponse = values.value;
         cachedResponseExpiration = values.until ?? now + ONE_MINUTE;
-      } else {
+      } else if (false) {
         const { value, metadata } = await env.QUICKPLAY.getWithMetadata(
           "servers"
         );
@@ -211,7 +211,7 @@ export class ServerListUpdate extends OpenAPIRoute {
 
     const value = JSON.stringify(servers);
 
-    if (true) {
+    if (false) {
       await env.QUICKPLAY.put("servers", value, {
         metadata: { until },
       });
