@@ -13,3 +13,9 @@ new_classes = ["HudDownloadCounter"]
 [[kv_namespaces]]
 binding = "QUICKPLAY"
 id = "2fa7e82570f845b78e0357500b055ad4"
+
+[[d1_databases]]
+binding = "DB" # available in your Worker on env.DB
+database_name = "comfig-api"
+database_id = "5baacbd6-f326-4084-ae4f-7e8a916756e8"
+

@@ -12,6 +12,7 @@ import { createCors } from "itty-router";
 export interface Env {
   HUD_COUNT: DurableObjectNamespace<Counter>;
   QUICKPLAY: KVNamespace;
+  DB: D1Database;
 }
 
 const { preflight, corsify } = createCors();
