@@ -20,7 +20,8 @@ const { preflight, corsify } = createCors({
   methods: ["GET", "HEAD", "POST"],
   maxAge: 900,
   headers: {
-    "Cross-Origin-Resource-Policy": "same-site",
+    "Cross-Origin-Resource-Policy": "same-origin",
+    "Content-Security-Policy": " default-src 'none'; frame-ancestors 'none'",
   },
 });
 
