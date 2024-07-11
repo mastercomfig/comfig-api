@@ -21,7 +21,8 @@ const { preflight, corsify } = createCors({
   maxAge: 900,
   headers: {
     "Cross-Origin-Resource-Policy": "same-origin",
-    "Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'",
+    "Content-Security-Policy":
+      "default-src 'none'; script-src 'self' https://unpkg.com; style-src 'self' https://unpkg.com https://static.cloudflareinsights.com; frame-ancestors 'none'",
   },
 });
 
