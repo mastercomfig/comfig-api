@@ -4,6 +4,7 @@ import {
   OpenAPIRouteSchema,
 } from "@cloudflare/itty-router-openapi";
 import geodesic from "geographiclib-geodesic";
+import { authenticate, validate } from "utils";
 import { ServerListData, ServerListRequest } from "../types";
 
 const geod = geodesic.Geodesic.WGS84;
@@ -102,6 +103,10 @@ export class ServerListQuery extends OpenAPIRoute {
     context: any,
     data: Record<string, any>
   ) {
+    if (!validate(request)) {
+      return { servers: [], until: 0 };
+    }
+
     const cfLon = request.cf.longitude as string | undefined;
     const cfLat = request.cf.latitude as string | undefined;
     if (!cfLat || !cfLon) {
@@ -195,10 +200,7 @@ export class ServerListUpdate extends OpenAPIRoute {
     context: any,
     data: Record<string, any>
   ) {
-    if (
-      false &&
-      request.headers.get("Authorization") !== `Bearer ${env.API_TOKEN}`
-    ) {
+    if (!authenticate(request, env.API_TOKEN)) {
       return {
         success: false,
       };

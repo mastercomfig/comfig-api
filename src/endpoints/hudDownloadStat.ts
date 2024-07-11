@@ -3,6 +3,7 @@ import {
   OpenAPIRouteSchema,
 } from "@cloudflare/itty-router-openapi";
 import anonymize from "ip-anonymize";
+import { authenticate, validate } from "utils";
 import { HudCount, HudStat } from "../types";
 
 export class HudDownloadStat extends OpenAPIRoute {
@@ -26,6 +27,12 @@ export class HudDownloadStat extends OpenAPIRoute {
     context: any,
     data: Record<string, any>
   ) {
+    if (!validate(request)) {
+      return {
+        success: false,
+      };
+    }
+
     // Retrieve the validated request body
     const stat = data.body;
 
@@ -78,7 +85,7 @@ export class HudDownloadGet extends OpenAPIRoute {
     context: any,
     data: Record<string, any>
   ) {
-    if (request.headers.get("Authorization") !== `Bearer ${env.API_TOKEN}`) {
+    if (!authenticate(request, env.API_TOKEN)) {
       return {
         count: -2,
       };

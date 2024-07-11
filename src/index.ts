@@ -15,7 +15,14 @@ export interface Env {
   DB: D1Database;
 }
 
-const { preflight, corsify } = createCors();
+const { preflight, corsify } = createCors({
+  origins: ["https://comfig.app"],
+  methods: ["GET", "HEAD", "POST"],
+  maxAge: 900,
+  headers: {
+    "Cross-Origin-Resource-Policy": "same-site",
+  },
+});
 
 export const router = OpenAPIRouter({
   docs_url: "/",

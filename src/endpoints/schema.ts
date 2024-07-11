@@ -2,6 +2,7 @@ import {
   OpenAPIRoute,
   OpenAPIRouteSchema,
 } from "@cloudflare/itty-router-openapi";
+import { authenticate, validate } from "utils";
 import { SchemaData } from "../types";
 
 export class SchemaGet extends OpenAPIRoute {
@@ -24,6 +25,9 @@ export class SchemaGet extends OpenAPIRoute {
     context: any,
     data: Record<string, any>
   ) {
+    if (!validate(request)) {
+      return {};
+    }
     const schema = await env.QUICKPLAY.get("schema");
     return new Response(schema);
   }
@@ -50,7 +54,7 @@ export class SchemaUpdate extends OpenAPIRoute {
     context: any,
     data: Record<string, any>
   ) {
-    if (request.headers.get("Authorization") !== `Bearer ${env.API_TOKEN}`) {
+    if (!authenticate(request, env.API_TOKEN)) {
       return {
         success: false,
       };
