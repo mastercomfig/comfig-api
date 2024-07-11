@@ -16,7 +16,12 @@ export interface Env {
 }
 
 const { preflight, corsify } = createCors({
-  origins: ["https://comfig.app"],
+  origins: [
+    "https://comfig.app",
+    "http://localhost:4321",
+    "http://127.0.0.1:4321",
+    "http://localhost:8787",
+  ],
   methods: ["GET", "HEAD", "POST"],
   maxAge: 900,
   headers: {
