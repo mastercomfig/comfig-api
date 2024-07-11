@@ -22,7 +22,7 @@ const { preflight, corsify } = createCors({
   headers: {
     "Cross-Origin-Resource-Policy": "same-origin",
     "Content-Security-Policy":
-      "default-src 'none'; script-src 'self' https://unpkg.com; style-src 'self' https://unpkg.com https://static.cloudflareinsights.com; frame-ancestors 'none'",
+      "default-src 'none'; script-src 'self' https://unpkg.com https://static.cloudflareinsights.com; style-src 'self' https://unpkg.com; frame-ancestors 'none'",
   },
 });
 
