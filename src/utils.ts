@@ -25,6 +25,20 @@ export function authenticate(request: Request, key: string) {
   const a = encoder.encode(auth);
   const b = encoder.encode(realBearer);
 
+  // timingSafeEqual will error out if byte lengths are not equal, so let's fake a comparison.
+  if (a.byteLength !== b.byteLength) {
+    falseSet = true;
+    // We use their key to give no information about our key.
+    let x = 0;
+    realBearer = auth;
+    for (let i = 0; i < auth.length; i++) {
+      x |= auth.charCodeAt(i) ^ realBearer.charCodeAt(i);
+    }
+    if (x === 0) {
+      return false;
+    }
+  }
+
   if (!crypto.subtle.timingSafeEqual(a, b)) {
     return false;
   }
