@@ -58,8 +58,8 @@ router.all("*", () =>
 export class HudDownloadCounter extends DurableObject {
   static milliseconds_per_request = 86400000;
 
-  async getCounterValue() {
-    let value = (await this.ctx.storage.get("value")) || 0;
+  async getCounterValue(): Promise<number> {
+    let value = ((await this.ctx.storage.get("value")) as number) || 0;
     return value;
   }
 
@@ -78,7 +78,8 @@ export class HudDownloadCounter extends DurableObject {
     }
     knownIpBlocks[ip] = now;
     await this.ctx.storage.put("known", knownIpBlocks);
-    let value: number = await this.getCounterValue();
+    // avoids call to getCounterValue()
+    let value = ((await this.ctx.storage.get("value")) as number) || 0;
     value += 1;
     await this.ctx.storage.put("value", value);
     return true;

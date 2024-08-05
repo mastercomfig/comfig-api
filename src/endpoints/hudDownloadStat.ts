@@ -40,7 +40,7 @@ export class HudDownloadStat extends OpenAPIRoute {
       request.headers.get("CF-Connecting-IP") ||
       request.headers.get("X-Real-Ip") ||
       (env.DEV && "127.0.0.1");
-    if (rawIp === null) {
+    if (!rawIp) {
       return {
         success: false,
       };
