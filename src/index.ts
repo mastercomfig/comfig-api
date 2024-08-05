@@ -73,7 +73,7 @@ export class HudDownloadCounter extends DurableObject {
     const now = Date.now();
     const last = knownIpBlocks[ip];
     // TODO: add fractional download value over duration of cooldown?
-    if (now - last < HudDownloadCounter.milliseconds_per_request) {
+    if (last && now - last < HudDownloadCounter.milliseconds_per_request) {
       return false;
     }
     knownIpBlocks[ip] = now;
