@@ -10,7 +10,7 @@ import { SchemaGet, SchemaUpdate } from "endpoints/schema";
 import { createCors } from "itty-router";
 
 export interface Env {
-  HUD_COUNT: DurableObjectNamespace<Counter>;
+  HUD_COUNT: DurableObjectNamespace<HudDownloadCounter>;
   QUICKPLAY: KVNamespace;
   DB: D1Database;
 }
@@ -27,7 +27,7 @@ const { preflight, corsify } = createCors({
   headers: {
     "Cross-Origin-Resource-Policy": "same-origin",
     "Content-Security-Policy":
-      "default-src 'none'; script-src 'self' https://unpkg.com https://static.cloudflareinsights.com; style-src 'self' https://unpkg.com; connect-src 'self'; frame-ancestors 'none'",
+      "default-src 'none'; script-src 'self' 'unsafe-inline' https://unpkg.com https://static.cloudflareinsights.com; style-src 'self' https://unpkg.com; connect-src 'self'; frame-ancestors 'none'",
   },
 });
 
