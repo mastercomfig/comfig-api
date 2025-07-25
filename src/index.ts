@@ -18,6 +18,7 @@ export interface Env {
 const { preflight, corsify } = createCors({
   origins: [
     "https://comfig.app",
+    "https://staging.mastercomfig-site.pages.dev"
     "http://localhost:4321",
     "http://127.0.0.1:4321",
     "http://localhost:8787",
