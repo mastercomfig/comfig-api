@@ -51,6 +51,10 @@ export function authenticate(request: Request, key: string) {
 }
 
 const allowedFetchSites = new Set(["same-origin", "same-site"]);
+const allowedCrossOrigins = new Set([
+  "http://localhost:4321",
+  "https://staging.mastercomfig-site.pages.dev",
+]);
 const allowedFetchModes = new Set(["cors", "no-cors", "same-origin"]);
 const disallowedFetchDests = new Set(["frame", "iframe", "embed", "object"]);
 
@@ -71,8 +75,15 @@ export function validate(request: Request) {
     return true;
   }
 
-  if (!allowedFetchSites.has(fetchSite)) {
-    return false;
+  if (fetchSite === "cross-site") {
+    const origin = request.headers.get("Origin");
+    if (!allowedCrossOrigins.has(origin)) {
+      return false;
+    }
+  } else {
+    if (!allowedFetchSites.has(fetchSite)) {
+      return false;
+    }
   }
 
   if (!allowedFetchModes.has(fetchMode)) {
