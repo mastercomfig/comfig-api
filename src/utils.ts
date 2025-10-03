@@ -53,7 +53,7 @@ export function authenticate(request: Request, key: string) {
 const allowedFetchSites = new Set(["same-origin", "same-site"]);
 const allowedCrossOrigins = new Set([
   "http://localhost:4321",
-  "https://staging.mastercomfig-site.pages.dev",
+  "https://develop.mastercomfig-site.pages.dev",
 ]);
 const allowedFetchModes = new Set(["cors", "no-cors", "same-origin"]);
 const disallowedFetchDests = new Set(["frame", "iframe", "embed", "object"]);
