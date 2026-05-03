@@ -23,6 +23,8 @@ export const ServerPrivate = {
   map: String,
   gametype: [String],
   score: Number,
+  adj: Number,
+  classic: Boolean,
   point: [Number],
   ping: Number,
 };

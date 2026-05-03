@@ -76,6 +76,8 @@ const Server = {
   map: String,
   gametype: [String],
   score: Number,
+  adj: Number,
+  classic: Boolean,
   ping: Number,
 };
 
